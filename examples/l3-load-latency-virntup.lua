@@ -32,9 +32,15 @@ function configure(parser)
 	parser:option("-f --flows", "Number of flows (randomized source IP)."):default(4):convert(tonumber)
 	parser:option("-s --size", "Packet size."):default(60):convert(tonumber)
 	parser:option("--file", "Filename of the latency histogram."):default("histogram.csv")
+	parser:option("--destIP", "Destination IP"):default("10.42.3.1")
+	parser:option("--destMAC", "Destination MAC address"):default("08:00:00:00:3:1")
 end
 
 function master(args)
+        -- Make Destination ip and MAC address configurable form CLI
+        DST_IP = args.destIP
+        DST_MAC = args.destMAC
+
 	txDev = device.config{port = args.txDev, rxQueues = 3, txQueues = 3}
 	rxDev = device.config{port = args.rxDev, rxQueues = 3, txQueues = 3}
 	device.waitForLinks()
