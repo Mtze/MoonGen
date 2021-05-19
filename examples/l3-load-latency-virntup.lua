@@ -23,7 +23,8 @@ function configure(parser)
 	parser:option("-r --rate", "Transmit rate in Mbit/s."):default(10000):convert(tonumber)
 	parser:option("-f --flows", "Number of flows (randomized source IP)."):default(4):convert(tonumber)
 	parser:option("-s --size", "Packet size."):default(60):convert(tonumber)
-	parser:option("--file", "Filename of the latency histogram."):default("histogram.csv")
+	parser:option("--latencyfile", "Filename of the latency histogram."):default("latencyhistogram.csv")
+	parser:option("--throughputfile", "Filename of the throughput csv."):default("throughput.csv")
 end
 
 function master(args)
@@ -59,8 +60,8 @@ function loadSlave(queue, rxDev, size, flows, args)
 	end)
 	local bufs = mempool:bufArray()
 	local counter = 0
-	local txCtr = stats:newDevTxCounter(queue, "plain")
-	local rxCtr = stats:newDevRxCounter(rxDev, "plain")
+	local txCtr = stats:newDevTxCounter(queue, "CSV", args.throughputfile)
+	local rxCtr = stats:newDevRxCounter(rxDev, "CSV", args.throughputfile)
 	local baseIP = parseIPAddress(SRC_IP_BASE)
 	while mg.running() do
 		bufs:alloc(size)
@@ -103,6 +104,6 @@ function timerSlave(txQueue, rxQueue, size, flows, args)
 	-- print the latency stats after all the other stuff
 	mg.sleepMillis(300)
 	hist:print()
-	hist:save(args.file)
+	hist:save(args.latencyfile)
 end
 
