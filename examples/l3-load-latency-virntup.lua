@@ -60,8 +60,8 @@ function loadSlave(queue, rxDev, size, flows, args)
 	end)
 	local bufs = mempool:bufArray()
 	local counter = 0
-	local txCtr = stats:newDevTxCounter(queue, "CSV", args.throughputfile)
-	local rxCtr = stats:newDevRxCounter(rxDev, "CSV", args.throughputfile)
+	local txCtr = stats:newDevTxCounter(rxDev, "plain")
+	local rxCtr = stats:newDevRxCounter(queue, "CSV", args.throughputfile)
 	local baseIP = parseIPAddress(SRC_IP_BASE)
 	while mg.running() do
 		bufs:alloc(size)
