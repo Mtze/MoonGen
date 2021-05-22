@@ -24,7 +24,8 @@ function configure(parser)
 	parser:option("-f --flows", "Number of flows (randomized source IP)."):default(4):convert(tonumber)
 	parser:option("-s --size", "Packet size."):default(60):convert(tonumber)
 	parser:option("--latencyfile", "Filename of the latency histogram."):default("latencyhistogram.csv")
-	parser:option("--throughputfile", "Filename of the throughput csv."):default("throughput.csv")
+	parser:option("--rxthroughputfile", "Filename of the rx throughput csv."):default("rx_throughput.csv")
+	parser:option("--txthroughputfile", "Filename of the tx throughput csv."):default("tx_throughput.csv")
 end
 
 function master(args)
@@ -60,8 +61,8 @@ function loadSlave(queue, rxDev, size, flows, args)
 	end)
 	local bufs = mempool:bufArray()
 	local counter = 0
-        local txCtr = stats:newDevTxCounter(queue, "CSV", "tx-" .. args.throughputfile)
-        local rxCtr = stats:newDevRxCounter(rxDev, "CSV", "rx-" .. args.throughputfile)
+        local txCtr = stats:newDevTxCounter(queue, "CSV", "tx-" .. args.txthroughputfile)
+        local rxCtr = stats:newDevRxCounter(rxDev, "CSV", "rx-" .. args.rxthroughputfile)
 	local baseIP = parseIPAddress(SRC_IP_BASE)
 	while mg.running() do
 		bufs:alloc(size)
